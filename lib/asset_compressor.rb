@@ -12,12 +12,12 @@ module AssetCompressor
   # things so they simply call a private third method, include_compressed.
   def javascript_include_compressed(compressed_file_name, *javascripts)
     javascripts.map! { |javascript| path_without_asset_id(javascript_path(javascript)) }
-    include_compressed(Proc.new { |sources| javascript_include_tag(*sources) }, path_without_asset_id(javascript_path(compressed_file_name)), *javascripts)
+    include_compressed(path_without_asset_id(javascript_path(compressed_file_name)), *javascripts) { |sources| javascript_include_tag(*sources) }
   end
   
   def stylesheet_link_compressed(compressed_file_name, *stylesheets)
     stylesheets.map! { |stylesheet| path_without_asset_id(stylesheet_path(stylesheet)) }
-    include_compressed(Proc.new { |sources| stylesheet_link_tag(*sources) }, path_without_asset_id(stylesheet_path(compressed_file_name)), *stylesheets)
+    include_compressed(path_without_asset_id(stylesheet_path(compressed_file_name)), *stylesheets) { |sources| stylesheet_link_tag(*sources) }
   end
   
   private
@@ -39,12 +39,12 @@ module AssetCompressor
   # The main method that handles both the compression of files and the returning of the
   # appropriate HTML tag.
   #
-  # It takes three mandatory arguments:
+  # It takes the following two mandatory arguments and a block containing the tag helper for 
+  # the asset type:
   # 
-  # => tag_helper: a Proc object for the tag helper method to use for this asset type.
   # => compressed_file_name: the path to the asset relative from RAILS_ROOT/public
   # => *sources: one or more actual sources to be compressed.
-  def include_compressed(tag_helper, compressed_file_name, *sources)
+  def include_compressed(compressed_file_name, *sources)
 
     # If we are to compress the files given (e.g. when in the correct environment) then do so.
     if compress?
@@ -61,7 +61,7 @@ module AssetCompressor
           end
         end
         
-        # Compress the concatenated file.
+        # Compress the concatenated file with YUI Compressor.
         `java -jar #{File.join(RAILS_ROOT, 'vendor', 'plugins', 'asset_compressor', 'lib', 'yuicompressor-2.2.4.jar')} #{File.join(RAILS_ROOT, 'tmp', File.basename(compressed_file_name))} -o #{File.join(RAILS_ROOT, 'public', compressed_file_name)}`
       
         # Delete the concatenated file.
@@ -69,11 +69,11 @@ module AssetCompressor
       end
       
       # Include tag for compressed file.
-      tag_helper.call(compressed_file_name)
+      yield compressed_file_name
     else
       
       # Include tags for each file separately.
-      tag_helper.call(*sources)
+      yield *sources
     end
   end
 end
