@@ -1,0 +1,8 @@
+AssetCompressor
+===============
+
+Based on both AssetPackager and Rails 2.0's built-in asset caching capabilities, this plugin
+will concatenate and compress any specified Javascript and Cascading Style Sheets using
+the excellent YUI Compressor.
+
+Copyright (c) 2007 Paul Mucur, released under the MIT license
