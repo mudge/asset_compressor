@@ -1,5 +1,7 @@
 module AssetCompressor
   
+  YUI_COMPRESSOR_VERSION = "2.2.5"
+  
   # By default, Javascripts and stylesheets will only be compressed when in production.
   # However, this can be overridden by changing the value of AssetCompressor.environment
   # in one of your initializers.
@@ -62,7 +64,7 @@ module AssetCompressor
         end
         
         # Compress the concatenated file with YUI Compressor.
-        `java -jar #{File.join(RAILS_ROOT, 'vendor', 'plugins', 'asset_compressor', 'lib', 'yuicompressor-2.2.4.jar')} #{File.join(RAILS_ROOT, 'tmp', File.basename(compressed_file_name))} -o #{File.join(RAILS_ROOT, 'public', compressed_file_name)}`
+        `java -jar #{File.join(RAILS_ROOT, 'vendor', 'plugins', 'asset_compressor', 'lib', "yuicompressor-#{YUI_COMPRESSOR_VERSION}.jar")} #{File.join(RAILS_ROOT, 'tmp', File.basename(compressed_file_name))} -o #{File.join(RAILS_ROOT, 'public', compressed_file_name)}`
       
         # Delete the concatenated file.
         File.delete(File.join(RAILS_ROOT, 'tmp', File.basename(compressed_file_name))) if File.exists?(File.join(RAILS_ROOT, 'tmp', File.basename(compressed_file_name)))
