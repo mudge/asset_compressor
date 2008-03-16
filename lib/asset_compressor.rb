@@ -75,7 +75,7 @@ module AssetCompressor
     else
       
       # Include tags for each file separately.
-      yield *sources
+      yield sources
     end
   end
 end
