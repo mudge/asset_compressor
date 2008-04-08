@@ -1,6 +1,6 @@
 module AssetCompressor
   
-  YUI_COMPRESSOR_VERSION = "2.2.5"
+  YUI_COMPRESSOR_VERSION = "2.3.5"
   
   # By default, Javascripts and stylesheets will only be compressed when in production.
   # However, this can be overridden by changing the value of AssetCompressor.environment
