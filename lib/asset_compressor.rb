@@ -57,10 +57,10 @@ module AssetCompressor
     if compress?
       
       tmp_filename = File.join(RAILS_ROOT, 'tmp', File.basename(compressed_file_name))
-      compressed_filename = File.join(RAILS_ROOT, 'public', compressed_file_name)
+      absolute_compressed_filename = File.join(RAILS_ROOT, 'public', compressed_file_name)
       
       # If the compressed file does not already exist, create it.
-      if !File.exists?(compressed_filename)
+      if !File.exists?(absolute_compressed_filename)
         
         # Concatenate the files together in Ruby as Windows does not have cat.
         File.open(tmp_filename, 'w') do |concatenated_file|
@@ -72,10 +72,10 @@ module AssetCompressor
         end
         
         # Compress the concatenated file with YUI Compressor.
-        `java -jar #{YUI_COMPRESSOR} #{tmp_filename} -o #{compressed_filename}`
+        `java -jar #{YUI_COMPRESSOR} #{tmp_filename} -o #{absolute_compressed_filename}`
       
         # Delete the concatenated file.
-        File.delete(File.join(RAILS_ROOT, 'tmp', File.basename(compressed_file_name))) if File.exists?(File.join(RAILS_ROOT, 'tmp', File.basename(compressed_file_name)))
+        File.delete(tmp_filename) if File.exists?(tmp_filename)
       end
       
       # Include tag for compressed file.
